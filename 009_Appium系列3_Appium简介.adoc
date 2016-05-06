@@ -1,0 +1,100 @@
+= Appium简介
+sunguolei <xiaozi0lei@gmail.com>
+2016-03-29
+
+:toc:
+:hardbreaks:
+
+参考自 Appium Essentials
+介绍了Appium的哲学
+
+== Appium哲学
+* 不应该为了自动化而去重新编译或者修改app
+* 不应该被限制在特定的语言和框架中去实现自动化
+* 自动化测试框架应该尽量重用轮子，而不是重新造轮子
+* 自动化测试框架应该是开源的
+
+Appium使用vendor提供的框架，因此我们不需要对app进行更改，重新编译。
+Appium扩展了WebDriver的客户端库，WebDriver已经实现了很多语言的类库，所以Appium也是支持多种编程语言，方便各个语言的使用者。
+Appium扩展WebDriver JSONWP，增加很多适用于移动设备的API，重用轮子，而不重造轮子。
+Appium是开源的项目。
+Appium针对native和hybrid apps提供跨平台的解决方案，我们用Appium实现的脚本，可以在IOS和Android设备上运行，也包括FirefoxOS。
+
+== Android/IOS系统要求
+
+=== Android系统要求
+Java (version 7 or later)
+Android SDK API (version 17 or later) -- 需要爬梯子
+Android Virtual Device (AVD) or real device
+
+=== IOS系统要求
+Mac OS X 10.7 or later
+Xcode (greater than or equal to 4.6.3; 5.1 is recommended) with the command-line
+build tool
+Java version 7 or later
+Homebrew
+Node and npm
+
+== Appium安装
+
+=== 通过打包好的对应平台的程序运行Appium
+Windows
+从 http://appium.io/[Appium官方网站]或者 https://github.com/appium/appium[github上]下载对应的windows下的包。
+需要先将nodejs的bin目录加入到Path环境变量，然后进入appium目录下的node_modules\appium\.bin目录(注意这里的bin前面有一个“点”)，执行命令 `node Appium-doctor`检查appium的环境配置是否正确
+MacOS
+从 http://appium.io/[Appium官方网站]或者 https://github.com/appium/appium[github上]下载对应的MacOS下的包。
+类似windows的方式检查appium的环境是否配置正确。
+
+=== 通过nodejs的npm仓库安装Appium
+安装好要求的版本的nodejs后，执行如下命令
+
+.全局安装appium
+----
+npm install –g appium
+# 安装appium-doctor检查appium环境是否正确
+npm install -g appium-doctor
+# 执行命令检查appium环境配置
+appium-doctor
+----
+
+windows下用nodejs安装可能会遇到权限的问题，我采用的是官方提供的windows包，当然我是在linux下使用appium。个人不推荐windows下使用appium。
+
+=== 通过源码直接运行Appium
+从 https://github.com/appium/appium[appium仓库]clone最新版的源码到本地，执行`npm install`安装必须的依赖包，需要爬梯子解决chromedriver的安装问题。
+然后执行命令 `node .`即可。
+
+== 下载必要的jar包文件
+* Selenium Server and WebDriver Java client
+* Appium Java client
+或者通过maven自动解决依赖
+
+[source, xml]
+----
+<dependencies>
+    <dependency>
+        <groupId>org.seleniumhq.selenium</groupId>
+        <artifactId>selenium-java</artifactId>
+        <version>2.46.0</version>
+    </dependency>
+    <dependency>
+        <groupId>org.testng</groupId>
+        <artifactId>testng</artifactId>
+        <version>6.1.1</version>
+        <scope>test</scope>
+    </dependency>
+    <dependency>
+        <groupId>io.appium</groupId>
+        <artifactId>java-client</artifactId>
+        <version>3.0.0</version>
+        <scope>test</scope>
+    </dependency>
+</dependencies>
+----
+
+== 创建IOS或者Android的模拟器或者使用真机测试
+== 导入一个测试项目的框架作为基础
+推荐阅读 https://www.gitbook.com/book/nishantverma/appium-for-android/details[Appium for Andorid]
+该文章配套的 https://github.com/testvagrant/AppiumDemo[项目代码]
+该项目使用的app是国外的一个网上商城，会遇到网络问题，我们需要的只是他的项目框架，其他的app及testNG的测试方法都需要根据自己的需要修改。
+
+恭祝大家早日学会使用Appium自动化测试！加油！

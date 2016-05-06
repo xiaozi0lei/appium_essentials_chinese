@@ -1,0 +1,54 @@
+= Appium架构
+sunguolei <xiaozi0lei@gmail.com>
+2016-03-27
+:toc:
+:hardbreaks:
+
+参考自 Appium Essentials
+
+Appium是一个Node.js编写的HTTP服务器，用来创建和控制WebDriver的sessions。
+Appium服务器采用和Selenium WebDriver一样的方式，通过接受JSON形式的request请求，然后依据不同的平台对这些请求采取不同的处理方式。
+
+== Appium on IOS
+在IOS上，Appium通过Apple的UIAutomation API与UI元素进行交互。UIAutomation是苹果提供的一套JavaScript库，用来编写测试脚本。
+
+上图是IOS上appium的整个测试数据的流转图。
+当我们执行脚本时，脚本会转换成对应的JSON数据，通过HTTP请求发送给Appium服务器，Appium服务器将请求转换成对应的command，发送给Instruments，Instruments在IOS设备上查找由Appium推送上来的Bootstrap.js文件，然后在IOS Instruments环境中执行这些命令。命令执行完成后，客户端会将结果和log发送给Appium服务器，Appium服务器标记脚本执行结果。
+
+== Appium on Android
+在Android上，Appium通过Google的UIAutomator框架与UI元素进行交互。
+
+上图是Android上appium的整个数据流转图。其中UIAutomator/Selendroid替换了苹果的Instruments，bootstrap.jar替换了苹果的bootstrap.js。
+Android version >= 17，使用谷歌的UIAutomator框架，早期的版本需要借助Selendroid框架。
+这里的Bootstrap.jar是一个TCP服务器，用它发送命令给android设备执行相关操作。
+数据流转和IOS是类似的，部分环节的工具和框架换了而已。
+
+== The Selenium JSON wire protocol
+JSON wire protocol (JSONWP)是一种数据传输的协议。该协议是一系列特定的，预定义好的标准化的RESTful API节点，主要是为了web的自动化测试设计的。
+Appium实现了移动端的JSONWP，扩展了Selenium JSONWP，用来控制不同的移动设备的交互操作。
+以下为部分API endpoints
+
+[source,ruby]
+----
+/session/:sessionId
+/session/:sessionId/element
+/session/:sessionId/elements
+/session/:sessionId/element/:id/click
+/session/:sessionId/source
+/session/:sessionId/url
+/session/:sessionId/timeouts/implicit_wait
+----
+完整的列表在这里，需要爬梯子
+https://code.google.com/p/selenium/wiki/JsonWireProtocol
+https://code.google.com/p/selenium/source/browse/spec-draft.md?repo=mobile
+
+Appium像WebDriver一样，提供了各个语言的客户端库作为接口与RESTful打交道。
+[source, java]
+----
+AppiumDriver.getPageSource();
+----
+上面这个方法将会触发一个HTTP请求到JSONWP，会从一个合适的API endpoint得到响应。这个方法对应的API endpoint如下：
+----
+/session/:sessionId/source
+----
+Appium Driver通过执行脚本，发送JSON请求到Appium Server获取对应的响应，Appium服务器执行完相应的命令后会以字符串形式返回页面的资源。如果是native app的话，将会返回一个XML文档表示UI层级结构。返回的结果形式取决于app的类型。

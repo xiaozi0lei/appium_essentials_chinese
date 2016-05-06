@@ -1,0 +1,31 @@
+= Appium Session和启动参数
+sunguolei <xiaozi0lei@gmail.com>
+2016-03-28
+:toc:
+:hardbreaks:
+
+参考自 Appium Essentials
+Session是一种用来发送命令到指定测试程序的媒介，命令总是在Session的Context中执行。
+Desired capabilities是一个JSON对象，通过客户端发送给服务器，用来设置Session属性的。
+
+== Appium Session
+当客户端发送任何命令的时候，都会带上sessionId作为session标示符来与服务器进行交互。当客户端发送请求给服务器创建session时，服务器会响应一个sessionId节点，用来同测试app进行后面的进一步交互。
+
+== Desired Capabilities
+Capabilities就是用来设置session的属性的。
+需要引入java包
+----
+import org.openqa.Selenium.remote.DesiredCapabilities
+----
+下面介绍几个主要的Appium Server的Capabilities
+automationName  该属性只对Android有用，用于定义automation engine，如果是SDK version小于17的，需要定义为Selendroid。默认的为Appium，适用于SDK version大于17的。
+platformName  该属性用来设置测试系统平台，取值为IOS、Android或者FirefoxOS。
+platformVersion 该属性用来设置测试系统版本
+deviceName  该属性用来设置连接的设备名，目前在Android上不生效
+app 该属性用来设置测试的app路径
+
+详细的Server Capabilities和Android、IOS Capabilities，请参考 https://github.com/appium/appium/blob/master/docs/en/writing-running-appium/caps.md[github appium Caps]
+
+== Appium client libraries
+Appium扩展了WebDriver协议，添加了很多新的功能支持移动设备操作，像多点触控，手势操作等。
+Appium是一个RESTful API，提供了主流的各种语言的类库，方便各语言开发者使用。
